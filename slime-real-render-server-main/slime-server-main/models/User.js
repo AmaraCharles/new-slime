@@ -19,6 +19,10 @@ const UsersSchema = new mongoose.Schema({
     type: String,
     
   },
+  spotBalance: {
+    type: String,
+    
+  },
   verify: {
     type: String,
     

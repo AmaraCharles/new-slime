@@ -55,6 +55,7 @@ router.post("/register", async (req, res) => {
       artWorks:[],
       collections:[],
       balance:0,
+      profit:0,
       verification:[],
       socialUsernames:[],
       password:hashPassword(password),
