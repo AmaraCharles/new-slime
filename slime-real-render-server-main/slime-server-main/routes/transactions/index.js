@@ -211,29 +211,19 @@ router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
     const user = await UsersDatabase.findOne({ _id });
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        status: 404,
-        message: "User not found",
-      });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // Find artwork by _id
     const artworkIndex = user.artWorks.findIndex(
       (art) => art._id.toString() === transactionId
     );
 
     if (artworkIndex === -1) {
-      return res.status(404).json({
-        success: false,
-        message: "Artwork not found",
-      });
+      return res.status(404).json({ success: false, message: "Artwork not found" });
     }
 
-    // Update status
     user.artWorks[artworkIndex].status = "listed";
-
-    // Save the user
+    user.markModified('artWorks'); // 🔥 Force Mongoose to track changes
     await user.save();
 
     return res.status(200).json({
@@ -243,12 +233,10 @@ router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
 
   } catch (error) {
     console.error("Listing error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Oops! An error occurred",
-    });
+    return res.status(500).json({ success: false, message: "Oops! An error occurred" });
   }
 });
+
 
 router.put("/:_id/transactions/:transactionId/decline", async (req, res) => {
   
