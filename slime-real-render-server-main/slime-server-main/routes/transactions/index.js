@@ -10,9 +10,9 @@ const app=express()
 
 
 
-router.post("/:_id/deposit", async (req, res) => {
+router.post("/:_id/single", async (req, res) => {
   const { _id } = req.params;
-  const { file1, file2, price ,collection,title,description,category,timestamp} = req.body;
+  const { imgUrl,price ,title,description,category,timeStamp,userId,royalty} = req.body;
 
   const user = await UsersDatabase.findOne({ _id });
 const from=user.name
@@ -32,14 +32,7 @@ const from=user.name
         ...user.artWorks,
         {
           _id: uuidv4(),
-          file1,
-           file2,
-            price ,
-            collection,
-            title,
-            description,
-          timestamp,
-          from
+          imgUrl,price ,title,description,category,timeStamp,from,royalty
         },
       ],
     });
@@ -57,7 +50,7 @@ const from=user.name
        title,
        description,
       from,
-      timestamp,
+      timeStamp,
     });
 
 
@@ -66,7 +59,7 @@ const from=user.name
       method: method,
       from: from,
       to:to,
-      timestamp:timestamp
+      timeStamp
     });
 
   } catch (error) {
