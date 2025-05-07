@@ -205,38 +205,52 @@ router.post("/:_id/auto", async (req, res) => {
 
 
 router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
-  const { _id, transactionId } = req.params;
+  
+  const { _id } = req.params;
+  const { transactionId } = req.params;
 
-  try {
-    const user = await UsersDatabase.findOne({ _id });
+  const user = await UsersDatabase.findOne({ _id });
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
-
-    const artworkIndex = user.artWorks.findIndex(
-      (art) => art._id.toString() === transactionId
-    );
-
-    if (artworkIndex === -1) {
-      return res.status(404).json({ success: false, message: "Artwork not found" });
-    }
-
-    user.artWorks[artworkIndex].status = "listed";
-    user.markModified('artWorks'); // 🔥 Force Mongoose to track changes
-    await user.save();
-
-    return res.status(200).json({
-      message: "Artwork listed",
-      success: true,
+  if (!user) {
+    res.status(404).json({
+      success: false,
+      status: 404,
+      message: "User not found",
     });
 
+    return;
+  }
+
+  try {
+    const depositsArray = user.artWorks;
+    const depositsTx = depositsArray.filter(
+      (tx) => tx._id === transactionId
+    );
+
+    depositsTx[0].status = "listed";
+    // console.log(withdrawalTx);
+
+    // const cummulativeWithdrawalTx = Object.assign({}, ...user.withdrawals, withdrawalTx[0])
+    // console.log("cummulativeWithdrawalTx", cummulativeWithdrawalTx);
+
+    await user.updateOne({
+      artWorks: [
+        ...user.artWorks
+        //cummulativeWithdrawalTx
+      ],
+    });
+
+    res.status(200).json({
+      message: "Artwork listed",
+    });
+
+    return;
   } catch (error) {
-    console.error("Listing error:", error);
-    return res.status(500).json({ success: false, message: "Oops! An error occurred" });
+    res.status(302).json({
+      message: "Opps! an error occured",
+    });
   }
 });
-
 
 router.put("/:_id/transactions/:transactionId/decline", async (req, res) => {
   
