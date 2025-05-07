@@ -205,49 +205,47 @@ router.post("/:_id/auto", async (req, res) => {
 
 
 router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
-  
-  const { _id } = req.params;
-  const { transactionId } = req.params;
-
-  const user = await UsersDatabase.findOne({ _id });
-
-  if (!user) {
-    res.status(404).json({
-      success: false,
-      status: 404,
-      message: "User not found",
-    });
-
-    return;
-  }
+  const { _id, transactionId } = req.params;
 
   try {
-    const depositsArray = user.transactions;
-    const depositsTx = depositsArray.filter(
-      (tx) => tx._id === transactionId
+    const user = await UsersDatabase.findOne({ _id });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    // Find artwork by _id
+    const artworkIndex = user.artWorks.findIndex(
+      (art) => art._id.toString() === transactionId
     );
 
-    depositsTx[0].status = "Approved";
-    // console.log(withdrawalTx);
+    if (artworkIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: "Artwork not found",
+      });
+    }
 
-    // const cummulativeWithdrawalTx = Object.assign({}, ...user.withdrawals, withdrawalTx[0])
-    // console.log("cummulativeWithdrawalTx", cummulativeWithdrawalTx);
+    // Update status
+    user.artWorks[artworkIndex].status = "listed";
 
-    await user.updateOne({
-      transactions: [
-        ...user.transactions
-        //cummulativeWithdrawalTx
-      ],
+    // Save the user
+    await user.save();
+
+    return res.status(200).json({
+      message: "Artwork listed",
+      success: true,
     });
 
-    res.status(200).json({
-      message: "Transaction approved",
-    });
-
-    return;
   } catch (error) {
-    res.status(302).json({
-      message: "Opps! an error occured",
+    console.error("Listing error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Oops! An error occurred",
     });
   }
 });
