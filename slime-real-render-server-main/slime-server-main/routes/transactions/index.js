@@ -12,7 +12,7 @@ const app=express()
 
 router.post("/:_id/single", async (req, res) => {
   const { _id } = req.params;
-  const { imgUrl,price ,title,description,category,timeStamp,userId,royalty} = req.body;
+  const { imgUrl,price ,title,description,category,timeStamp,userId,royalty,avatar} = req.body;
 
   const user = await UsersDatabase.findOne({ _id });
 const from=user.name
@@ -26,13 +26,23 @@ const from=user.name
     return;
   }
 
+
   try {
     await user.updateOne({
       artWorks: [
         ...user.artWorks,
         {
           _id: uuidv4(),
-          imgUrl,price ,title,description,category,timeStamp,from,royalty
+          image:imgUrl,
+          price ,
+          title,
+          description,
+          category,
+          timeStamp,
+          creator:from,
+          royalty,
+          creatorAvatar:avatar,
+          currentBid:" "
         },
       ],
     });
