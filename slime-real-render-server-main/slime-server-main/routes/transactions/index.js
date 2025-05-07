@@ -42,7 +42,8 @@ const from=user.name
           creator:from,
           royalty,
           creatorAvatar:avatar,
-          currentBid:" "
+          currentBid:" ",
+          status:"unlisted",
         },
       ],
     });
