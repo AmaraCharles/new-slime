@@ -261,18 +261,16 @@ router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 success: false,
-                status: 404,
                 message: `User not found: ${_id}`,
             });
         }
 
-        // Step 2: Find the transaction by ID
-        const transaction = user.transactions.find(tx => tx._id.toString() === transactionId);
+        // Step 2: Find the transaction by ID (ensure both IDs are strings)
+        const transaction = user.transactions.find(tx => String(tx._id) === String(transactionId));
 
         if (!transaction) {
             return res.status(404).json({
                 success: false,
-                status: 404,
                 message: `Transaction not found: ${transactionId}`,
             });
         }
@@ -280,14 +278,12 @@ router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
         // Step 3: Update the transaction status to "Approved"
         transaction.status = "Approved";
 
-        // Step 4: Update the user's balance by adding the transaction amount
-        user.balance = (user.balance || 0) + (transaction.amount || 0);
+        // Step 4: Update the user's balance safely
+        const amount = Number(transaction.amount) || 0;
+        user.balance = (user.balance || 0) + amount;
 
         // Save the updated user data
-        await UsersDatabase.updateOne(
-            { _id: user._id },
-            { $set: { transactions: user.transactions, balance: user.balance } }
-        );
+        await user.save();
 
         res.status(200).json({
             success: true,
