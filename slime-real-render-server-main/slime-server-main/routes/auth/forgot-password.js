@@ -20,13 +20,14 @@ router.put("/:_id/reset-password", async function (req, res, next) {
   const { _id } = req.params;
   const { password } = req.body;
 
+
   const user = await UsersDatabase.findOne({ _id });
 
   if (!user) {
     res.status(404).json({ message: "user not found" });
     return;
   }
-
+console.log(password);
   const hashedPassword = hashPassword(password);
 
   try {
