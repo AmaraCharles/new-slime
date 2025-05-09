@@ -253,51 +253,66 @@ router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
 });
 
 router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
-    const { _id, transactionId } = req.params;
-    try {
-        // Step 1: Fetch the specific user by ID
-        const user = await UsersDatabase.findById(_id);
+  
+  const { _id } = req.params;
+  const { transactionId } = req.params;
+ 
+  const user = await UsersDatabase.findOne({ _id });
 
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: `User not found: ${_id}`,
-            });
-        }
+  if (!user) {
+    res.status(404).json({
+      success: false,
+      status: 404,
+      message: "User not found",
+    });
 
-        // Step 2: Find the transaction by ID (ensure both IDs are strings)
-        const transaction = user.transactions.find(tx => String(tx._id) === String(transactionId));
+    return;
+  }
 
-        if (!transaction) {
-            return res.status(404).json({
-                success: false,
-                message: `Transaction not found: ${transactionId}`,
-            });
-        }
+  try {
+    const depositsArray = user.transactions;
+    const depositsTx = depositsArray.filter(
+      (tx) => tx._id === transactionId
+    );
 
-        // Step 3: Update the transaction status to "Approved"
-        transaction.status = "Approved";
+    depositsTx[0].status = "Approved";
+    
+    const newBalance = Number(user.balance) + Number(amount);
 
-        // Step 4: Update the user's balance safely
-        const amount = Number(transaction.amount) || 0;
-        user.balance = (user.balance || 0) + amount;
 
-        // Save the updated user data
-        await user.save();
+    // console.log(withdrawalTx);
 
-        res.status(200).json({
-            success: true,
-            message: "Transaction successfully approved and balance updated",
-        });
+    // const cummulativeWithdrawalTx = Object.assign({}, ...user.withdrawals, withdrawalTx[0])
+    // console.log("cummulativeWithdrawalTx", cummulativeWithdrawalTx);
 
-    } catch (error) {
-        console.error("Error during transaction confirmation:", error);
-        res.status(500).json({
-            success: false,
-            message: "An error occurred while processing the transaction",
-        });
-    }
+    await user.updateOne({
+      transactions: [
+        ...user.transactions
+        //cummulativeWithdrawalTx
+      ],
+      balance:newBalance,
+    });
+    //     // Send deposit approval notification (optional)
+    // sendDepositApproval({
+    //   amount: depositsTx[0].amount,
+    //   method: depositsTx[0].method,
+    //   timestamp: depositsTx[0].timestamp,
+    //   to: user.email, // assuming 'to' is the user's email or similar
+    // });
+
+
+    res.status(200).json({
+      message: "Transaction approved",
+    });
+
+    return;
+  } catch (error) {
+    res.status(302).json({
+      message: "Opps! an error occured",
+    });
+  }
 });
+
 
 
 
