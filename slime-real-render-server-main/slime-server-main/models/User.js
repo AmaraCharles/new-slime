@@ -59,6 +59,10 @@ type:Array
     type: String,
     
   },
+  creatorAvatar: {
+    type: String,
+    
+  },
 
   email: {
     type: String,

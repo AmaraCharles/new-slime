@@ -20,7 +20,38 @@ function generateReferralCode(length) {
 
 router.post("/register", async (req, res) => {
   const { name, username, email, password, phoneNumber} = req.body;
+const nftArtworks = [
+    { title: "Bored Ape #148", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/1484.png" },
+    { title: "Bored Ape #3478", url: "https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/3478" },
+    { title: "Bored Ape #3547", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/3547.png" },
+    { title: "Bored Ape #7070", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/7070.png" },
+    { title: "Bored Ape #9996", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/9996.png" },
+    { title: "Mutant Ape #21380", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/21380.png" },
+    { title: "Mutant Ape #3097", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/3097.png" },
+    { title: "Mutant Ape #1490", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/1490.png" },
+    { title: "Mutant Ape #4849", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/4849.png" },
+    { title: "Mutant Ape #7923", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/7923.png" },
+    { title: "CryptoPunk #4464", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/4464.png" },
+    { title: "CryptoPunk #6213", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/6213.png" },
+    { title: "CryptoPunk #7053", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/7053.png" },
+    { title: "CryptoPunk #1045", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/1045.png" },
+    { title: "CryptoPunk #7804", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/7804.png" },
+    { title: "Bored Ape #2087", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/2087.png" },
+    { title: "Bored Ape #5199", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/5199.png" },
+    { title: "Mutant Ape #9988", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/9988.png" },
+    { title: "Mutant Ape #5678", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/5678.png" },
+    { title: "CryptoPunk #9998", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/9998.png" }
+];
 
+function getRandomNFT() {
+    // Shuffle the array
+    const shuffled = nftArtworks.sort(() => Math.random() - 0.5);
+    // Return the first item from the shuffled array
+    return shuffled[0].url;
+}
+
+console.log(getRandomNFT());
+var avatar=getRandomNFT()
   try {
     // Check if any user has that email
     const user = await UsersDatabase.findOne({ email });
@@ -51,6 +82,7 @@ router.post("/register", async (req, res) => {
       name,
       username,
       email,
+      creatorAvatar:avatar,
       phoneNumber,
       artWorks:[],
       collections:[],
