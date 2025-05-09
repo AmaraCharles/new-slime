@@ -252,7 +252,7 @@ router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
   }
 });
 
-router.put("/transactions/confirm", async (req, res) => {
+router.put("id/transactions/confirm", async (req, res) => {
   const { artworkId, artworkName, bidAmount, bidderName, bidderId, timestamp } = req.body;
 
   try {
