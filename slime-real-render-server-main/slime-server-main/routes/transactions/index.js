@@ -252,7 +252,7 @@ router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
   }
 });
 
-router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
+router.put("/:_id/transactions/:transactionId/approve", async (req, res) => {
   
   const { _id } = req.params;
   const { transactionId } = req.params;
