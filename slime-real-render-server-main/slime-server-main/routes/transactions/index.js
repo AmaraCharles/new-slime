@@ -268,7 +268,7 @@ router.put("/id/confirm", async (req, res) => {
           return res.status(404).json({
               success: false,
               status: 404,
-              message: "Artwork not found",
+              message: `Artwork not found ${ artworkId }`,
           });
       }
 
