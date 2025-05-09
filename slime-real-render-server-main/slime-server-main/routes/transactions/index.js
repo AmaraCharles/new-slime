@@ -253,58 +253,53 @@ router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
 });
 
 router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
-  const  {_id,transactionId}=req.params
-  try {
-      // Step 1: Fetch all users
-      const users = await UsersDatabase.find();
+    const { _id, transactionId } = req.params;
+    try {
+        // Step 1: Fetch the specific user by ID
+        const user = await UsersDatabase.findById(_id);
 
-      // Step 2: Find the user who owns the artwork
-      const owner = users.find(user => 
-          user.transactions.some(tx => tx._id === transactionId)
-      );
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                status: 404,
+                message: `User not found: ${_id}`,
+            });
+        }
 
-      if (!owner) {
-          return res.status(404).json({
-              success: false,
-              status: 404,
-              message: `Artwork not found ${ transactionId }`,
-          });
-      }
+        // Step 2: Find the transaction by ID
+        const transaction = user.transactions.find(tx => tx._id.toString() === transactionId);
 
-      // Step 3: Update the artwork status to "sold" and change creatorName to bidderName
-      const transaction = owner.transactons.find(tx => tx._id === transactionId);
-      if (!artwork) {
-          return res.status(404).json({
-              success: false,
-              status: 404,
-              message: "Artwork not found in owner's collection",
-          });
-      }
+        if (!transaction) {
+            return res.status(404).json({
+                success: false,
+                status: 404,
+                message: `Transaction not found: ${transactionId}`,
+            });
+        }
 
-      tx.status = "Approved";
-      // artwork.creatorName = bidderName;
+        // Step 3: Update the transaction status to "Approved"
+        transaction.status = "Approved";
 
-      // Update the owner's artwork collection
-      await UsersDatabase.updateOne(
-          { $set: { transactions: owner.transactions } }
-      );
+        // Save the updated user data
+        await UsersDatabase.updateOne(
+            { _id: user._id },
+            { $set: { transactions: user.transactions } }
+        );
 
-      // Step 4: Find the bidder and add the artwork to their collection
-    
+        res.status(200).json({
+            success: true,
+            message: "Transaction successfully approved",
+        });
 
-      res.status(200).json({
-          success: true,
-          message: "Deposit successfully approved",
-      });
-
-  } catch (error) {
-      console.error("Error during deposit request:", error);
-      res.status(500).json({
-          success: false,
-          message: "An error occurred while processing the transaction",
-      });
-  }
+    } catch (error) {
+        console.error("Error during transaction confirmation:", error);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while processing the transaction",
+        });
+    }
 });
+
 
 
 router.put("/id/confirm", async (req, res) => {
