@@ -37,26 +37,30 @@ router.delete("/:email/delete", async function (req, res, next) {
   res.status(200).json({ code: "Ok" });
 });
 
-router.put("/:_id/profile/update", async function (req, res, next) {
+router.put("/:_id/profile/update", async function (req, res) {
   const { _id } = req.params;
 
-  const user = await UsersDatabase.findOne({ _id: _id });
-
-  if (!user) {
-    res.status(404).json({ message: "user not found" });
-    return;
-  }
-
   try {
-    await user.update({
-      ...req.body,
-    });
+    const user = await UsersDatabase.findByIdAndUpdate(
+      _id,
+      { ...req.body },
+      { new: true } // Return the updated document
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     return res.status(200).json({
-      message: "update was successful",
+      message: "Update was successful",
+      data: user, // Optionally return the updated user data
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 });
 

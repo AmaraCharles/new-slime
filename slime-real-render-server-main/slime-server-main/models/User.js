@@ -64,6 +64,15 @@ type:Array
     
   },
 
+  
+ bio: {
+    type: String,
+    
+  },
+   socials: {
+    type: Object,
+    
+  },
   email: {
     type: String,
     required: true,
