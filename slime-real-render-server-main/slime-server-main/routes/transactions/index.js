@@ -327,7 +327,7 @@ router.put("/id/confirm", async (req, res) => {
 
 
 // Fetch Artwork by User ID and Transaction ID
-router.get('/users/art/:_id/:transactionId', async (req, res) => {
+router.get('/art/:_id/:transactionId', async (req, res) => {
   const { _id, transactionId } = req.params;
   try {
       const user = await User.findById(_id);
@@ -344,7 +344,7 @@ router.get('/users/art/:_id/:transactionId', async (req, res) => {
 });
 
 // Update Artwork Details
-router.put('/users/art/:_id/:transactionId', async (req, res) => {
+router.put('/art/:_id/:transactionId', async (req, res) => {
   const { _id, transactionId } = req.params;
   const { from, title, price, imgUrl, category, collection, views, description, status } = req.body;
 
