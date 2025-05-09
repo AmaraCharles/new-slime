@@ -280,15 +280,18 @@ router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
         // Step 3: Update the transaction status to "Approved"
         transaction.status = "Approved";
 
+        // Step 4: Update the user's balance by adding the transaction amount
+        user.balance = (user.balance || 0) + (transaction.amount || 0);
+
         // Save the updated user data
         await UsersDatabase.updateOne(
             { _id: user._id },
-            { $set: { transactions: user.transactions } }
+            { $set: { transactions: user.transactions, balance: user.balance } }
         );
 
         res.status(200).json({
             success: true,
-            message: "Transaction successfully approved",
+            message: "Transaction successfully approved and balance updated",
         });
 
     } catch (error) {
