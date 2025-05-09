@@ -19,106 +19,70 @@ function generateReferralCode(length) {
 
 
 router.post("/register", async (req, res) => {
-  const { name, username, email, password, phoneNumber} = req.body;
-const nftArtworks = [
+  const { name, username, email, password, phoneNumber } = req.body;
+
+  const nftArtworks = [
     { title: "Bored Ape #148", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/1484.png" },
     { title: "Bored Ape #3478", url: "https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/3478" },
     { title: "Bored Ape #3547", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/3547.png" },
     { title: "Bored Ape #7070", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/7070.png" },
-    { title: "Bored Ape #9996", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/9996.png" },
-    { title: "Mutant Ape #21380", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/21380.png" },
-    { title: "Mutant Ape #3097", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/3097.png" },
-    { title: "Mutant Ape #1490", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/1490.png" },
-    { title: "Mutant Ape #4849", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/4849.png" },
-    { title: "Mutant Ape #7923", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/7923.png" },
-    { title: "CryptoPunk #4464", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/4464.png" },
-    { title: "CryptoPunk #6213", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/6213.png" },
-    { title: "CryptoPunk #7053", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/7053.png" },
-    { title: "CryptoPunk #1045", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/1045.png" },
-    { title: "CryptoPunk #7804", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/7804.png" },
-    { title: "Bored Ape #2087", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/2087.png" },
-    { title: "Bored Ape #5199", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/5199.png" },
-    { title: "Mutant Ape #9988", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/9988.png" },
-    { title: "Mutant Ape #5678", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/5678.png" },
-    { title: "CryptoPunk #9998", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/9998.png" }
-];
+    { title: "Bored Ape #9996", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/9996.png" }
+  ];
 
-function getRandomNFT() {
-    // Shuffle the array
+  function getRandomNFT() {
     const shuffled = nftArtworks.sort(() => Math.random() - 0.5);
-    // Return the first item from the shuffled array
     return shuffled[0].url;
-}
+  }
 
-console.log(getRandomNFT());
-var avatar=getRandomNFT()
   try {
-    // Check if any user has that email
-    const user = await UsersDatabase.findOne({ email });
+    // Check if the user already exists
+    const existingUser = await UsersDatabase.findOne({ email });
 
-    if (user) {
+    if (existingUser) {
       return res.status(400).json({
         success: false,
         message: "Email address is already taken",
       });
     }
 
+    // Generate a random avatar for the new user
+    const avatar = getRandomNFT();
+    console.log("Assigned Avatar:", avatar);
 
-    // Find the referrer based on the provided referral code
-    // let referrer = null;
-    
-    // if (referralCode) {
-    //   referrer = await UsersDatabase.findOne({ referralCode });
-    //   if (!referrer) {
-    //     return res.status(400).json({
-    //       success: false,
-    //       message: "Invalid referral code",
-    //     });
-    //   }
-    // }
+    // Hash the password (assuming the function exists and works correctly)
+    const hashedPassword = hashPassword(password);
+    if (!hashedPassword) {
+      throw new Error("Password hashing failed");
+    }
 
-    // Create a new user with referral information
+    // Create a new user object
     const newUser = {
       name,
       username,
       email,
-      creatorAvatar:avatar,
+      creatorAvatar: avatar,
       phoneNumber,
-      artWorks:[],
-      collections:[],
-      balance:0,
-      profit:0,
-      verification:[],
-      socialUsernames:[],
-      password:hashPassword(password),
+      artWorks: [],
+      collections: [],
+      balance: 0,
+      profit: 0,
+      verification: [],
+      socialUsernames: [],
+      password: hashedPassword,
       transactions: [],
       withdrawals: [],
-      verify:"pending"
-      
+      verify: "pending"
     };
 
-    // if (referrer) {
-    //   newUser.referredBy=referrer.name;
-    //   referrer.referredUsers.push(newUser.name);
-    //   await referrer.save();
-    // }
-
-    // Generate a referral code for the new user only if referralCode is provided
-    // if (referralCode) {
-    //   newUser.referralCode = generateReferralCode(6);
-    // }
-
-    // If there's a referrer, update their referredUsers list
-   
-    // Create the new user in the database
+    // Save the new user in the database
     const createdUser = await UsersDatabase.create(newUser);
     const token = uuidv4();
     sendWelcomeEmail({ to: email, token });
-userRegisteration({name,email});
+    userRegisteration({ name, email });
 
-    return res.status(200).json({ code: "Ok", data: createdUser });
+    return res.status(201).json({ code: "Ok", data: createdUser });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error:", error.message);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
