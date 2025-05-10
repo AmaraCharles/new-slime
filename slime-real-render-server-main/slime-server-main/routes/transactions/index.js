@@ -525,7 +525,7 @@ router.put("/gtfo/:_id/start/:transactionId/decline", async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Transaction approved successfully"
+      message: "Transaction Declined successfully"
     });
 
   } catch (error) {

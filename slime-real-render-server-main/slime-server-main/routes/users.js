@@ -41,19 +41,25 @@ router.put("/:_id/profile/update", async function (req, res) {
   const { _id } = req.params;
 
   try {
-    const user = await UsersDatabase.findByIdAndUpdate(
-      _id,
-      { ...req.body },
-      { new: true } // Return the updated document
-    );
+    // First find the user to ensure they exist
+    const existingUser = await UsersDatabase.findById(_id);
 
-    if (!user) {
+    if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Update the user document
+    await existingUser.updateOne(
+      { $set: { ...req.body } },
+      { runValidators: true }
+    );
+
+    // Fetch the updated user to return in response
+    const updatedUser = await UsersDatabase.findById(_id);
+
     return res.status(200).json({
       message: "Update was successful",
-      data: user, // Optionally return the updated user data
+      data: updatedUser,
     });
   } catch (error) {
     console.error(error);
