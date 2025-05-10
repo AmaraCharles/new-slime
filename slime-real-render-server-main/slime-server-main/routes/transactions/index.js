@@ -469,34 +469,33 @@ router.get('/art/:_id/:transactionId', async (req, res) => {
 });
 
 // Update Artwork Details
+const mongoose = require('mongoose');
+
 router.put('/art/:_id/:transactionId', async (req, res) => {
   const { _id, transactionId } = req.params;
   const { from, title, price, imgUrl, category, collection, views, description, status } = req.body;
 
   try {
+    // Convert the _id to an ObjectId if needed
+    const userId = mongoose.Types.ObjectId.isValid(_id) ? mongoose.Types.ObjectId(_id) : _id;
 
-      const user =  await UsersDatabase.findOne({ _id });
-      if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    // Find the user by ID
+    const user = await UsersDatabase.findOne({ _id: userId });
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-      const artwork = user.artWorks.find(item => item._id === transactionId);
-      if (!artwork) return res.status(404).json({ success: false, message: 'Artwork not found' });
+    // Find the artwork within the user's artworks array
+    const artwork = user.artWorks.find(item => item._id.toString() === transactionId);
+    if (!artwork) return res.status(404).json({ success: false, message: 'Artwork not found' });
 
-      // Update artwork details
-      artwork.from = from;
-      artwork.title = title;
-      artwork.price = price;
-      artwork.imgUrl = imgUrl;
-      artwork.category = category;
-      artwork.collection = collection;
-      artwork.views = views;
-      artwork.description = description;
-      artwork.status = status;
+    // Update artwork details
+    Object.assign(artwork, { from, title, price, imgUrl, category, collection, views, description, status });
 
-      await user.save();
-      res.status(200).json({ success: true, message: 'Artwork updated successfully' });
+    // Save the updated user document
+    await user.save();
+    res.status(200).json({ success: true, message: 'Artwork updated successfully' });
   } catch (error) {
-      console.error('Error updating artwork:', error);
-      res.status(500).json({ success: false, message: 'Server error' });
+    console.error('Error updating artwork:', error.message || error);
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 });
 
