@@ -441,57 +441,63 @@ router.put("/id/confirm", async (req, res) => {
 
 
 router.put("/gtfo/:_id/start/:transactionId/approve", async (req, res) => {
-  
-  const { _id } = req.params;
-  const { transactionId } = req.params;
- 
-  const user = await UsersDatabase.findOne({ _id });
-
-  if (!user) {
-    res.status(404).json({
-      success: false,
-      status: 404,
-      message: "User not found",
-    });
-
-    return;
-  }
-
   try {
-    const depositsArray = user.transactions;
-    const depositsTx = depositsArray.filter(
-      (tx) => tx._id === transactionId
-    );
+    const { _id, transactionId } = req.params;
+    const { amount } = req.body; // Add amount from request body
+ 
+    const user = await UsersDatabase.findOne({ _id });
 
-    depositsTx[0].status = "Approved";
-    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    const depositsArray = user.transactions;
+    const depositsTx = depositsArray.find(tx => tx._id === transactionId);
+
+    if (!depositsTx) {
+      return res.status(404).json({
+        success: false,
+        message: "Transaction not found"
+      });
+    }
+
+    depositsTx.status = "Approved";
     const newBalance = Number(user.balance) + Number(amount);
 
+    await UsersDatabase.findOneAndUpdate(
+      { _id },
+      {
+        $set: {
+          transactions: depositsArray,
+          balance: newBalance
+        }
+      },
+      { new: true }
+    );
 
-    // console.log(withdrawalTx);
-
-    // const cummulativeWithdrawalTx = Object.assign({}, ...user.withdrawals, withdrawalTx[0])
-    // console.log("cummulativeWithdrawalTx", cummulativeWithdrawalTx);
-
-    await user.updateOne({
-      transactions: [
-        ...user.transactions
-        //cummulativeWithdrawalTx
-      ],
-      balance:newBalance,
+    return res.status(200).json({
+      success: true,
+      message: "Transaction approved successfully"
     });
+
+  } catch (error) {
+    console.error('Transaction approval error:', error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while processing the transaction"
+    });
+  }
+});
    
     res.status(200).json({
       message: "Transaction approved",
     });
 
-    return;
-  } catch (error) {
-    res.status(302).json({
-      message: "Opps! an error occured",
-    });
-  }
-});
+   
 // Fetch Artwork by User ID and Transaction ID
 router.get('/art/:_id/:transactionId', async (req, res) => {
   const { _id, transactionId } = req.params;

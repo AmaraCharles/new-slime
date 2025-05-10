@@ -8,6 +8,8 @@ const secret = speakeasy.generateSecret({ length: 4 });
 
 
 const hashPassword = (password) => {
+   console.log('Password to hash:', password);  // Log password before hashing
+ 
   const hashedPassword = bcrypt.hashSync(password, salt);
   return hashedPassword;
 };
