@@ -493,9 +493,7 @@ router.put("/gtfo/:_id/start/:transactionId/approve", async (req, res) => {
   }
 });
    
-    res.status(200).json({
-      message: "Transaction approved",
-    });
+   
 
    
 // Fetch Artwork by User ID and Transaction ID
