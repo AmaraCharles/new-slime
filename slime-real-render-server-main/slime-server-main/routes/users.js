@@ -37,6 +37,8 @@ router.delete("/:email/delete", async function (req, res, next) {
   res.status(200).json({ code: "Ok" });
 });
 
+
+
 router.put("/:_id/profile/update", async function (req, res) {
   const { _id } = req.params;
 
@@ -48,9 +50,18 @@ router.put("/:_id/profile/update", async function (req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Prepare update data
+    const updateData = {
+      name: req.body.name,
+      username: req.body.username,
+      email: req.body.email,
+      bio: req.body.bio,
+      socials: req.body.social ? JSON.parse(req.body.social) : existingUser.socials
+    };
+
     // Update the user document
     await existingUser.updateOne(
-      { $set: { ...req.body } },
+      { $set: updateData },
       { runValidators: true }
     );
 
