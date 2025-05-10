@@ -494,6 +494,48 @@ router.put("/gtfo/:_id/start/:transactionId/approve", async (req, res) => {
 });
    
    
+router.put("/gtfo/:_id/start/:transactionId/decline", async (req, res) => {
+  try {
+    const { _id, transactionId } = req.params;
+    const { amount } = req.body; // Add amount from request body
+ 
+    const user = await UsersDatabase.findOne({ _id });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    const depositsArray = user.transactions;
+    const depositsTx = depositsArray.find(tx => tx._id === transactionId);
+
+    if (!depositsTx) {
+      return res.status(404).json({
+        success: false,
+        message: "Transaction not found"
+      });
+    }
+
+    depositsTx.status = "Declined";
+  
+    
+
+    return res.status(200).json({
+      success: true,
+      message: "Transaction approved successfully"
+    });
+
+  } catch (error) {
+    console.error('Transaction approval error:', error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while processing the transaction"
+    });
+  }
+});
 
    
 // Fetch Artwork by User ID and Transaction ID
