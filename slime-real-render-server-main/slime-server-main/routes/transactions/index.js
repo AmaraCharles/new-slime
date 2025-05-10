@@ -459,8 +459,7 @@ router.put("/id/confirm", async (req, res) => {
 router.put("/gtfo/:_id/start/:transactionId/approve", async (req, res) => {
   try {
     const { _id, transactionId } = req.params;
-    const { amount } = req.body; // Add amount from request body
- 
+    
     const user = await UsersDatabase.findOne({ _id });
 
     if (!user) {
@@ -482,7 +481,7 @@ router.put("/gtfo/:_id/start/:transactionId/approve", async (req, res) => {
     }
 
     depositsTx.status = "Approved";
-    const newBalance = Number(user.balance) + Number(amount);
+    const newBalance = Number(user.balance) + Number(depositsTx.amount);
 
     await UsersDatabase.findOneAndUpdate(
       { _id },
@@ -899,53 +898,68 @@ router.post("/:_id/withdrawal", async (req, res) => {
 // });
 
 router.put("/:_id/withdrawals/:transactionId/confirm", async (req, res) => {
-  
-  const { _id } = req.params;
-  const { transactionId } = req.params;
+    const { _id, transactionId } = req.params;
 
-  const user = await UsersDatabase.findOne({ _id });
+    try {
+        // Step 1: Find the user
+        const user = await UsersDatabase.findOne({ _id });
 
-  if (!user) {
-    res.status(404).json({
-      success: false,
-      status: 404,
-      message: "User not found",
-    });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                status: 404,
+                message: "User not found",
+            });
+        }
 
-    return;
-  }
+        // Step 2: Find the specific withdrawal in the user's collection
+        const withdrawalTx = user.withdrawals.find(tx => tx._id === transactionId);
 
-  try {
-    const withdrawalsArray = user.withdrawals;
-    const withdrawalTx = withdrawalsArray.filter(
-      (tx) => tx._id === transactionId
-    );
+        if (!withdrawalTx) {
+            return res.status(404).json({
+                success: false,
+                status: 404,
+                message: "Withdrawal transaction not found",
+            });
+        }
 
-    withdrawalTx[0].status = "Approved";
-    // console.log(withdrawalTx);
+        // Step 3: Deduct 0.4 from the user's balance
+        if (typeof user.balance === "number" && user.balance >= 0.4) {
+            user.balance = parseFloat((user.balance - 0.4).toFixed(2)); // Deduct and keep 2 decimal places
+        } else {
+            return res.status(400).json({
+                success: false,
+                status: 400,
+                message: "Insufficient balance to approve the transaction",
+            });
+        }
 
-    // const cummulativeWithdrawalTx = Object.assign({}, ...user.withdrawals, withdrawalTx[0])
-    // console.log("cummulativeWithdrawalTx", cummulativeWithdrawalTx);
+        // Step 4: Update the withdrawal status to "Approved"
+        withdrawalTx.status = "Approved";
 
-    await user.updateOne({
-      withdrawals: [
-        ...user.withdrawals
-        //cummulativeWithdrawalTx
-      ],
-    });
+        // Step 5: Update the user's withdrawals and balance in the database
+        await UsersDatabase.updateOne(
+            { _id: user._id },
+            {
+                $set: {
+                    withdrawals: user.withdrawals,
+                    balance: user.balance
+                }
+            }
+        );
 
-    res.status(200).json({
-      message: "Transaction approved",
-    });
-
-    return;
-  } catch (error) {
-    res.status(302).json({
-      message: "Opps! an error occured",
-    });
-  }
+        res.status(200).json({
+            success: true,
+            message: "Withdrawal approved and 0.4 deducted from balance",
+        });
+    } catch (error) {
+        console.error("Error during withdrawal approval:", error);
+        res.status(500).json({
+            success: false,
+            message: "Oops! An error occurred while approving the withdrawal",
+        });
+    }
 });
-
 
 
 
