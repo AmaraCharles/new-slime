@@ -23,7 +23,7 @@ router.post("/register", async (req, res) => {
 
   const nftArtworks = [
     { title: "Bored Ape #148", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/1484.png" },
-    { title: "Bored Ape #3478", url: "https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/3478" },
+    { title: "Bored Ape #3478", url: "https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/3478.png" },
     { title: "Bored Ape #3547", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/3547.png" },
     { title: "Bored Ape #7070", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/7070.png" },
     { title: "Bored Ape #9996", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/9996.png" }
