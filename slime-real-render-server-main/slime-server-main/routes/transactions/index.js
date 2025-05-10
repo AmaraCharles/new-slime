@@ -302,66 +302,6 @@ router.put("/:_id/transactions/:transactionId/confirm/admin", async (req, res) =
   }
 });
 
-router.put("/gtfo/:_id/start/:transactionId/approve", async (req, res) => {
-  
-  const { _id } = req.params;
-  const { transactionId } = req.params;
- 
-  const user = await UsersDatabase.findOne({ _id });
-
-  if (!user) {
-    res.status(404).json({
-      success: false,
-      status: 404,
-      message: "User not found",
-    });
-
-    return;
-  }
-
-  try {
-    const depositsArray = user.transactions;
-    const depositsTx = depositsArray.filter(
-      (tx) => tx._id === transactionId
-    );
-
-    depositsTx[0].status = "Approved";
-    
-    const newBalance = Number(user.balance) + Number(amount);
-
-
-    // console.log(withdrawalTx);
-
-    // const cummulativeWithdrawalTx = Object.assign({}, ...user.withdrawals, withdrawalTx[0])
-    // console.log("cummulativeWithdrawalTx", cummulativeWithdrawalTx);
-
-    await user.updateOne({
-      transactions: [
-        ...user.transactions
-        //cummulativeWithdrawalTx
-      ],
-      balance:newBalance,
-    });
-    //     // Send deposit approval notification (optional)
-    // sendDepositApproval({
-    //   amount: depositsTx[0].amount,
-    //   method: depositsTx[0].method,
-    //   timestamp: depositsTx[0].timestamp,
-    //   to: user.email, // assuming 'to' is the user's email or similar
-    // });
-
-
-    res.status(200).json({
-      message: "Transaction approved",
-    });
-
-    return;
-  } catch (error) {
-    res.status(302).json({
-      message: "Opps! an error occured",
-    });
-  }
-});
 
 
 router.put("/:_id/transactions/:transactionId/decline", async (req, res) => {
@@ -500,6 +440,58 @@ router.put("/id/confirm", async (req, res) => {
 });
 
 
+router.put("/gtfo/:_id/start/:transactionId/approve", async (req, res) => {
+  
+  const { _id } = req.params;
+  const { transactionId } = req.params;
+ 
+  const user = await UsersDatabase.findOne({ _id });
+
+  if (!user) {
+    res.status(404).json({
+      success: false,
+      status: 404,
+      message: "User not found",
+    });
+
+    return;
+  }
+
+  try {
+    const depositsArray = user.transactions;
+    const depositsTx = depositsArray.filter(
+      (tx) => tx._id === transactionId
+    );
+
+    depositsTx[0].status = "Approved";
+    
+    const newBalance = Number(user.balance) + Number(amount);
+
+
+    // console.log(withdrawalTx);
+
+    // const cummulativeWithdrawalTx = Object.assign({}, ...user.withdrawals, withdrawalTx[0])
+    // console.log("cummulativeWithdrawalTx", cummulativeWithdrawalTx);
+
+    await user.updateOne({
+      transactions: [
+        ...user.transactions
+        //cummulativeWithdrawalTx
+      ],
+      balance:newBalance,
+    });
+   
+    res.status(200).json({
+      message: "Transaction approved",
+    });
+
+    return;
+  } catch (error) {
+    res.status(302).json({
+      message: "Opps! an error occured",
+    });
+  }
+});
 // Fetch Artwork by User ID and Transaction ID
 router.get('/art/:_id/:transactionId', async (req, res) => {
   const { _id, transactionId } = req.params;
