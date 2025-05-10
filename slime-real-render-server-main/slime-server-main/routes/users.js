@@ -48,6 +48,59 @@ router.put("/:_id/profile/update", async function (req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Parse the request body
+    const updateData = {};
+    
+    // Handle basic fields
+    if (req.body.name) updateData.name = req.body.name;
+    if (req.body.username) updateData.username = req.body.username;
+    if (req.body.email) updateData.email = req.body.email;
+    if (req.body.bio) updateData.bio = req.body.bio;
+    
+    // Handle social media links if provided as a JSON string
+    if (req.body.socials) {
+      try {
+        const socialsData = typeof req.body.socials === 'string' 
+          ? JSON.parse(req.body.socials)
+          : req.body.socials;
+        updateData.socials = socialsData;
+      } catch (error) {
+        console.error('Error parsing socials data:', error);
+      }
+    }
+
+    // Update the user document with validated data
+    await existingUser.updateOne(
+      { $set: updateData },
+      { runValidators: true }
+    );
+
+    // Fetch the updated user to return in response
+    const updatedUser = await UsersDatabase.findById(_id);
+
+    return res.status(200).json({
+      message: "Update was successful",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+});
+router.put("/:_id/profile/update/admin", async function (req, res) {
+  const { _id } = req.params;
+
+  try {
+    // First find the user to ensure they exist
+    const existingUser = await UsersDatabase.findById(_id);
+
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     // Update the user document
     await existingUser.updateOne(
       { $set: { ...req.body } },

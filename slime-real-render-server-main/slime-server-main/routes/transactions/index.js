@@ -205,51 +205,67 @@ router.post("/:_id/auto", async (req, res) => {
 
 
 router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
-  
-  const { _id } = req.params;
-  const { transactionId } = req.params;
+    const { _id, transactionId } = req.params;
 
-  const user = await UsersDatabase.findOne({ _id });
+    try {
+        // Step 1: Find the user
+        const user = await UsersDatabase.findOne({ _id });
 
-  if (!user) {
-    res.status(404).json({
-      success: false,
-      status: 404,
-      message: "User not found",
-    });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                status: 404,
+                message: "User not found",
+            });
+        }
 
-    return;
-  }
+        // Step 2: Find the specific artwork in the user's collection
+        const depositsTx = user.artWorks.find(tx => tx._id === transactionId);
 
-  try {
-    const depositsArray = user.artWorks;
-    const depositsTx = depositsArray.filter(
-      (tx) => tx._id === transactionId
-    );
+        if (!depositsTx) {
+            return res.status(404).json({
+                success: false,
+                status: 404,
+                message: "Artwork not found in user's collection",
+            });
+        }
 
-    depositsTx[0].status = "listed";
-    // console.log(withdrawalTx);
+        // Step 3: Deduct 0.1 from the user's balance
+        if (typeof user.balance === "number" && user.balance >= 0.1) {
+            user.balance = parseFloat((user.balance - 0.1).toFixed(2)); // Deduct and keep 2 decimal places
+        } else {
+            return res.status(400).json({
+                success: false,
+                status: 400,
+                message: "Insufficient balance to list the artwork",
+            });
+        }
 
-    // const cummulativeWithdrawalTx = Object.assign({}, ...user.withdrawals, withdrawalTx[0])
-    // console.log("cummulativeWithdrawalTx", cummulativeWithdrawalTx);
+        // Step 4: Update the artwork status to "listed"
+        depositsTx.status = "listed";
 
-    await user.updateOne({
-      artWorks: [
-        ...user.artWorks
-        //cummulativeWithdrawalTx
-      ],
-    });
+        // Step 5: Update the user's artwork array and balance in the database
+        await UsersDatabase.updateOne(
+            { _id: user._id },
+            {
+                $set: {
+                    artWorks: user.artWorks,
+                    balance: user.balance
+                }
+            }
+        );
 
-    res.status(200).json({
-      message: "Artwork listed",
-    });
-
-    return;
-  } catch (error) {
-    res.status(302).json({
-      message: "Opps! an error occured",
-    });
-  }
+        res.status(200).json({
+            success: true,
+            message: "Artwork listed successfully and 0.1 deducted from balance",
+        });
+    } catch (error) {
+        console.error("Error during artwork listing:", error);
+        res.status(500).json({
+            success: false,
+            message: "Oops! An error occurred while listing the artwork",
+        });
+    }
 });
 
 
