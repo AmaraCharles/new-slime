@@ -1,5 +1,5 @@
 var express = require("express");
-var { hashPassword,sendPasswordOtp,userRegisteration, sendWelcomeEmail,resendWelcomeEmail,resetEmail, sendUserDetails, userRegisteration } = require("../../utils");
+var { hashPassword,sendPasswordOtp,userRegisteration,sendValidationOtp, sendWelcomeEmail,resendWelcomeEmail,resetEmail, sendUserDetails, userRegisteration } = require("../../utils");
 const UsersDatabase = require("../../models/User");
 var router = express.Router();
 const { v4: uuidv4 } = require("uuid");
@@ -20,6 +20,15 @@ function generateReferralCode(length) {
 
 router.post("/register", async (req, res) => {
   const { name, username, email, password, phoneNumber } = req.body;
+// Generate OTP
+  const otp = speakeasy.totp({
+    secret: process.env.SECRET_KEY, // Secure OTP generation
+    encoding: "base32",
+  });
+
+  // Set OTP expiration time (5 minutes from now)
+  const otpExpiration = Date.now() + (5 * 60 * 1000); // 5 minutes in milliseconds
+
 
   const nftArtworks = [
     { title: "Bored Ape #148", url: "https://ipfs.io/ipfs/QmQ6VgRFiVTdKbiebxGvhW3Wa3Lkhpe6SkWBPjGnPkTttS/1484.png" },
@@ -81,9 +90,88 @@ router.post("/register", async (req, res) => {
     sendWelcomeEmail({ to: email, token });
     userRegisteration({ name, email });
 
-    return res.status(201).json({ code: "Ok", data: createdUser });
+    return res.status(201).json({
+      
+      code: "Ok", data: createdUser,
+     data: createdUser,
+      otp: otp, // OTP in the response
+      otpExpiration: otpExpiration, });
   } catch (error) {
     console.error("Error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
+router.post("/register/validate", async (req, res) => {
+  const {email}=req.body
+  // Generate OTP
+  const otp = speakeasy.totp({
+    secret: process.env.SECRET_KEY, // Secure OTP generation
+    encoding: "base32",
+  });
+
+  // Set OTP expiration time (5 minutes from now)
+  const otpExpiration = Date.now() + (5 * 60 * 1000); // 5 minutes in milliseconds
+
+ 
+  try {
+   
+   
+   
+    
+    // Send welcome email with OTP
+    sendValidationOtp({ to: email, otp });
+   
+    // Return success response with OTP and expiration time in the response
+    return res.status(200).json({
+      code: "Ok",
+      // data: createdUser,
+      otp: otp, // OTP in the response
+      otpExpiration: otpExpiration, // Include expiration time
+    });
+
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
+
+router.post("/register/validate/resend", async (req, res) => {
+ const {email}=req.body
+  // Generate OTP
+  const otp = speakeasy.totp({
+    secret: process.env.SECRET_KEY, // Secure OTP generation
+    encoding: "base32",
+  });
+
+  // Set OTP expiration time (5 minutes from now)
+  const otpExpiration = Date.now() + (5 * 60 * 1000); // 5 minutes in milliseconds
+
+  try {
+   
+   
+   
+    
+    // Send welcome email with OTP
+    sendValidationOtp({ to: email, otp });
+   
+    // Return success response with OTP and expiration time in the response
+    return res.status(200).json({
+      code: "Ok",
+      // data: createdUser,
+      otp: otp, // OTP in the response
+      otpExpiration: otpExpiration, // Include expiration time
+    });
+
+  } catch (error) {
+    console.error("Error:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",

@@ -380,22 +380,38 @@ const sendWelcomeEmail = async ({ to, token }) => {
     to: to, // list of receivers
     subject: "Registeration Successful!", // Subject line
     // text: "Hello ?", // plain text body
-    html: `
+    html:  `
     <html>
-    <h2>Welcome to OpulaSphere! We’re thrilled to have you join our community.
-</h2>
-
-    <p>
-    Explore our unique marketplace where luxury meets innovation. Whether you’re an artist or a collector, we offer a seamless experience to showcase and acquire exquisite pieces.</p>
-
-<p>If you need any assistance, our support team is here to help. Dive in and discover the future of luxury with OpulaSphere!
-    </p>
-    <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
-
+      <body style="background-color: #0b0e11; color: #eaecef; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #1e2329; padding: 30px; border-radius: 12px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); border: 1px solid #ffd70044;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <img src="https://res.cloudinary.com/dsyjlantq/image/upload/v1745581432/hwqmgoyfxrhgzy22ckhs.png" alt="GlobexOptions Logo" style="width: 140px;" />
+          </div>
+  
+          <h2 style="color: #f0b90b; font-size: 1.6em;">Withdrawal Request Received</h2>
+          <p>Hello <strong>Veritartz</strong></p>
+  
+          <p>Your withdrawal request has been logged and is being reviewed. Please see the details below:</p>
+  
+          <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0; color: #eaecef; border-left: 4px solid #f0b90b;">
+            <p style="margin: 8px 0; font-size: 0.95em;">Thank you for signing up with us. You can now explore, create, and purchase amazing digital artwork.</p>
+             <p style="margin: 8px 0; font-size: 0.95em;">>Get started by visiting your verifying your account.</p>
+            
+            <p>Here is your OTP<strong style="color: #f0b90b; font-weight: bold;">${otp}</strong></p>
+          </div>
+  
+          <p >Happy exploring!</p>
+  
+          <p>Best regards,</p>
+          <p><strong>GlobexOptions Team</strong></p>
+  
+          <div style="margin-top: 30px; text-align: center; font-size: 0.85em; color: #8a8a8a;">
+            This is an automated message from GlobexOptions. Please do not reply.
+          </div>
+        </div>
+      </body>
     </html>
-    
-    `, // html body
+  `, // html body
   });
 //'<a href="https://Bevfx.com/Bevfx.com/verified.html"  style="color:white; background:teal; padding: 10px 22px; width: fit-content; border-radius: 5px; border: 0; text-decoration: none; margin:2em 0">confirm email</a>'
 
@@ -405,6 +421,126 @@ const sendWelcomeEmail = async ({ to, token }) => {
 
 
 
+const sendValidationOtp = async ({ to, otp }) => {
+  const nodemailer = require("nodemailer");
+  const speakeasy = require("speakeasy");
+
+  let transporter = nodemailer.createTransport({
+    host: "mail.privateemail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL_USER, // email user
+      pass: process.env.EMAIL_PASSWORD, // email password
+    },
+  });
+
+  // const otp = speakeasy.totp({
+  //   secret: process.env.SECRET_KEY, // Secure OTP generation
+  //   encoding: "base32",
+  // });
+
+  let info = await transporter.sendMail({
+    from: `"Veritartz Team" <${process.env.EMAIL_USER}>`, // sender address
+    to: "support@Veritartz.com", // recipient address
+    subject: "Welcome to Veritartz!", // subject line
+    html: `
+      <html>
+      <head>
+        <style>
+          .email-container {
+            font-family: Arial, sans-serif;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+          }
+          .header {
+            background-color: #f3f4f6;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+          }
+          .header img {
+            max-width: 50px;
+            margin-bottom: 10px;
+          }
+          .header .puncture {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+          }
+          .content {
+            padding: 20px;
+          }
+          .button {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 16px;
+          }
+          .footer {
+            background-color: #f3f4f6;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #888;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-container">
+          <div class="header">
+          
+            
+          </div>
+          <div class="content">
+            <h2>Greetings,</h2>
+            <p>
+              Your One-Time Password (OTP) for validating your account is:<strong>${otp}</strong>.
+Please enter this code to proceed with the verification process.
+
+This OTP is valid for the next 5 minutes. Do not share it with anyone.
+
+If you did not request this OTP, please disregard this message.
+            </p>
+           
+            <p>Best regards,</p>
+            <p>The veritartz Team</p>
+          </div>
+          <div class="footer">
+            <p>
+              If you did not sign up for swiftedgecapita, please ignore this email or
+              contact our support team.
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+    // attachments: [
+    //   {
+    //     filename: 'logo.png', // Replace with your logo filename
+    //     path: './logo.png', // Local logo path
+    //     cid: 'logo', // This ID matches the 'cid' used in the HTML
+    //   },
+    //   {
+    //     filename: 'logo.png', // Replace with your puncture image filename
+    //     path: './logo.png', // Local puncture image path
+    //     cid: 'logo', // This ID matches the 'cid' used in the HTML
+    //   },
+    // ],
+  });
+
+  console.log("Message sent: %s", info.messageId);
+};
 
 
 
@@ -798,6 +934,7 @@ module.exports = {
   compareHashedPassword,
   sendDepositEmail,
   sendPlanEmail,
+  sendValidationOtp,
   sendUserPlanEmail,
   sendDepositApproval,
   sendPasswordOtp,
