@@ -430,113 +430,45 @@ const sendValidationOtp = async ({ to, otp }) => {
     port: 465,
     secure: true,
     auth: {
-      user: process.env.EMAIL_USER, // email user
-      pass: process.env.EMAIL_PASSWORD, // email password
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
     },
   });
 
-  // const otp = speakeasy.totp({
-  //   secret: process.env.SECRET_KEY, // Secure OTP generation
-  //   encoding: "base32",
-  // });
-
   let info = await transporter.sendMail({
-    from: `"Veritartz Team" <${process.env.EMAIL_USER}>`, // sender address
-    to: "support@Veritartz.com", // recipient address
-    subject: "Welcome to Veritartz!", // subject line
+    from: `"Veritartz Team" <${process.env.EMAIL_USER}>`,
+    to: "support@Veritartz.com",
+    subject: "Welcome to Veritartz!",
     html: `
-      <html>
-      <head>
-        <style>
-          .email-container {
-            font-family: Arial, sans-serif;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-          }
-          .header {
-            background-color: #f3f4f6;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-          }
-          .header img {
-            max-width: 50px;
-            margin-bottom: 10px;
-          }
-          .header .puncture {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100px;
-          }
-          .content {
-            padding: 20px;
-          }
-          .button {
-            display: inline-block;
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 20px 0;
-            font-size: 16px;
-          }
-          .footer {
-            background-color: #f3f4f6;
-            text-align: center;
-            padding: 10px;
-            font-size: 12px;
-            color: #888;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="email-container">
-          <div class="header">
-          
-            
-          </div>
-          <div class="content">
-            <h2>Greetings,</h2>
-            <p>
-              Your One-Time Password (OTP) for validating your account is:<strong>${otp}</strong>.
-Please enter this code to proceed with the verification process.
-
-This OTP is valid for the next 5 minutes. Do not share it with anyone.
-
-If you did not request this OTP, please disregard this message.
-            </p>
-           
-            <p>Best regards,</p>
-            <p>The veritartz Team</p>
-          </div>
-          <div class="footer">
-            <p>
-              If you did not sign up for swiftedgecapita, please ignore this email or
-              contact our support team.
-            </p>
-          </div>
+    <html>
+    <body style="background-color: #0b0e11; color: #eaecef; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #1e2329; padding: 30px; border-radius: 12px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); border: 1px solid #ffd70044;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <img src="https://res.cloudinary.com/dsyjlantq/image/upload/v1745581432/hwqmgoyfxrhgzy22ckhs.png" alt="Veritartz Logo" style="width: 140px;" />
         </div>
-      </body>
-      </html>
-    `,
-    // attachments: [
-    //   {
-    //     filename: 'logo.png', // Replace with your logo filename
-    //     path: './logo.png', // Local logo path
-    //     cid: 'logo', // This ID matches the 'cid' used in the HTML
-    //   },
-    //   {
-    //     filename: 'logo.png', // Replace with your puncture image filename
-    //     path: './logo.png', // Local puncture image path
-    //     cid: 'logo', // This ID matches the 'cid' used in the HTML
-    //   },
-    // ],
+
+        <h2 style="color: #f0b90b; font-size: 1.6em;">Verify Your Email</h2>
+        <p style="margin: 8px 0; font-size: 0.95em;">Welcome to Veritartz! Please use the verification code below to complete your registration:</p>
+
+        <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+          <p style="font-size: 2em; letter-spacing: 5px; color: #f0b90b; margin: 0;">${otp}</p>
+          <p style="color: #8a8a8a; margin-top: 10px; font-size: 0.9em;">This code will expire in 5 minutes</p>
+        </div>
+
+        <p style="margin: 8px 0; font-size: 0.95em;">If you didn't request this verification code, please ignore this email.</p>
+
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #2b3139;">
+          <p style="margin: 0;">Best regards,</p>
+          <p style="margin: 5px 0; color: #f0b90b;"><strong>Veritartz Team</strong></p>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center; font-size: 0.85em; color: #8a8a8a;">
+          This is an automated message, please do not reply.
+        </div>
+      </div>
+    </body>
+    </html>
+    `
   });
 
   console.log("Message sent: %s", info.messageId);
