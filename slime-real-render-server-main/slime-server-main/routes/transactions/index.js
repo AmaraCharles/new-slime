@@ -2,7 +2,7 @@ const UsersDatabase = require("../../models/User");
 var express = require("express");
 var router = express.Router();
 const { sendDepositEmail,sendPlanEmail} = require("../../utils");
-const { sendUserDepositEmail,sendUserPlanEmail,sendWithdrawalEmail,sendWithdrawalRequestEmail,sendKycAlert} = require("../../utils");
+const { sendUserDepositEmail,sendUserPlanEmail,sendWithdrawalEmail,sendWithdrawalRequestEmail,sendKycAlert,sendArtworkListingEmailToUser,sendArtworkListingEmailToAdmin,sendArtworkSoldEmailToOwner,sendArtworkPurchaseEmailToBidder} = require("../../utils");
 
 const { v4: uuidv4 } = require("uuid");
 const app=express()
@@ -56,7 +56,7 @@ router.post("/:_id/single", async (req, res) => {
 
     sendDepositEmail({
        price ,
-       collection,
+       
        category,
        title,
        description,
@@ -255,9 +255,24 @@ router.put("/:_id/transactions/:transactionId/confirm", async (req, res) => {
             }
         );
 
+        // Send email notifications
+        await sendArtworkListingEmailToAdmin({
+            from: user.name,
+            artworkTitle: depositsTx.title,
+            price: depositsTx.price,
+            timestamp: new Date().toISOString()
+        });
+
+        await sendArtworkListingEmailToUser({
+            to: user.email,
+            artworkTitle: depositsTx.title,
+            price: depositsTx.price,
+            timestamp: new Date().toISOString()
+        });
+
         res.status(200).json({
             success: true,
-            message: "Artwork listed successfully and 0.1 deducted from balance",
+            message: "Artwork listed successfully and 0.1 deducted from balance"
         });
     } catch (error) {
         console.error("Error during artwork listing:", error);
@@ -440,6 +455,23 @@ router.put("/id/confirm", async (req, res) => {
           { _id: bidderId },
           { $push: { artWorks: newArtwork } }
       );
+
+      // Send email notifications to both owner and bidder
+      await sendArtworkSoldEmailToOwner({
+          to: owner.email,
+          artworkName: artworkName,
+          bidAmount: bidAmount,
+          bidderName: bidderName,
+          timestamp: timestamp
+      });
+
+      await sendArtworkPurchaseEmailToBidder({
+          to: bidder.email,
+          artworkName: artworkName,
+          bidAmount: bidAmount,
+          ownerName: owner.name,
+          timestamp: timestamp
+      });
 
       res.status(200).json({
           success: true,
