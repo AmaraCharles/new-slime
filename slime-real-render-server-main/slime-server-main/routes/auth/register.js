@@ -3,6 +3,10 @@ var { hashPassword,sendPasswordOtp,userRegisteration,sendValidationOtp, sendWelc
 const UsersDatabase = require("../../models/User");
 var router = express.Router();
 const { v4: uuidv4 } = require("uuid");
+const speakeasy = require('speakeasy');
+
+const secret = speakeasy.generateSecret({ length: 4 });
+
 
 // Function to generate a referral code
 function generateReferralCode(length) {
