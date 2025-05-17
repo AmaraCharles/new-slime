@@ -673,21 +673,21 @@ router.post("/:_id/deposit", async (req, res) => {
       message: "Deposit was successful",
     });
 
-    // sendDepositEmail({
-    //   amount: amount,
-    //   method: method,
-    //   from: from,
-    //   timestamp:timestamp
-    // });
+    sendDepositEmail({
+      amount: amount,
+      method: method,
+      from: from,
+      timestamp:timestamp
+    });
 
 
-    // sendUserDepositEmail({
-    //   amount: amount,
-    //   method: method,
-    //   from: from,
-    //   to:to,
-    //   timestamp:timestamp
-    // });
+    sendUserDepositEmail({
+      amount: amount,
+      method: method,
+      from: from,
+      to:to,
+      timestamp:timestamp
+    });
 
   } catch (error) {
     console.log(error);

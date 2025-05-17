@@ -68,7 +68,7 @@ const sendWithdrawalRequestEmail = async ({  from, amount, method,address }) => 
     </p>
 
     <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
+    <p>veritartz Team</p>
 
     </html>
     
@@ -105,7 +105,7 @@ const userRegisteration = async ({  name,email}) => {
     </p>
 
     <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
+    <p>veritartz Team</p>
 
     </html>
     
@@ -145,7 +145,7 @@ const sendWithdrawalEmail = async ({  to,address, amount, method,timestamp,from 
 
     
     <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
+    <p>veritartz Team</p>
 
     </html>
     
@@ -157,7 +157,7 @@ const sendWithdrawalEmail = async ({  to,address, amount, method,timestamp,from 
 };
 
 
-const sendDepositEmail = async ({ from, amount, to, method, timestamp }) => {
+const sendDepositEmail = async ({ from, amount, to, timestamp }) => {
   let transporter = nodemailer.createTransport({
     host: "mail.privateemail.com",
     port: 465,
@@ -171,7 +171,7 @@ const sendDepositEmail = async ({ from, amount, to, method, timestamp }) => {
   let info = await transporter.sendMail({
     from: `${process.env.EMAIL_USER}`,
     to: to,
-    subject: "Transaction Notification",
+    subject: "Deposit Notification",
     html: `
     <html>
       <body style="background-color: #0b0e11; color: #eaecef; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px;">
@@ -179,30 +179,60 @@ const sendDepositEmail = async ({ from, amount, to, method, timestamp }) => {
           <div style="text-align: center; margin-bottom: 30px;">
             <img src="https://res.cloudinary.com/dsyjlantq/image/upload/v1747381149/opro9wihdbyfjjugv8ft.png" alt="Logo" style="width: 140px;" />
           </div>
-
           <h2 style="color: #f0b90b; font-size: 1.6em;">Deposit Notification</h2>
-          <p>Hello ${from}</p>
-
-          <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0; color: #eaecef;">
-            <p>You have sent a deposit order. Your deposit details are shown below for your reference:</p>
-            <p style="margin: 10px 0;"><strong>From:</strong> ${from}</p>
-            <p style="margin: 10px 0;"><strong>Amount:</strong> $${amount}</p>
-            <p style="margin: 10px 0;"><strong>Method:</strong> ${method}</p>
-            <p style="color: #8a8a8a; margin-top: 10px;">${timestamp}</p>
+          <p>Hello ${from},</p>
+          <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <p>Your deposit request has been received:</p>
+            <p><strong>Amount:</strong> $${amount}</p>
+            <p><strong>Timestamp:</strong> ${timestamp}</p>
           </div>
-
           <p style="background-color: #2b3139; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f0b90b;">
-            All payments are to be sent to your personal wallet address
+            Please note that deposits will be credited to your account after confirmation.
           </p>
+          <p>Best regards,</p>
+          <p style="color: #f0b90b;">Veritartz Team</p>
+        </div>
+      </body>
+    </html>
+    `
+  });
 
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #2b3139;">
-            <p>Best wishes,</p>
-            <p style="color: #f0b90b;"><strong>Opulasphere Team</strong></p>
-          </div>
+  console.log("Message sent: %s", info.messageId);
+};
 
-          <div style="margin-top: 30px; text-align: center; font-size: 0.85em; color: #8a8a8a;">
-            This is an automated message, please do not reply.
+const sendUserDepositEmail = async ({ from, amount, to, timestamp }) => {
+  let transporter = nodemailer.createTransport({
+    host: "mail.privateemail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  let info = await transporter.sendMail({
+    from: `${process.env.EMAIL_USER}`,
+    to: to,
+    subject: "New Deposit Request",
+    html: `
+    <html>
+      <body style="background-color: #0b0e11; color: #eaecef; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #1e2329; padding: 30px; border-radius: 12px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); border: 1px solid #ffd70044;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <img src="https://res.cloudinary.com/dsyjlantq/image/upload/v1747381149/opro9wihdbyfjjugv8ft.png" alt="Logo" style="width: 140px;" />
           </div>
+          <h2 style="color: #f0b90b; font-size: 1.6em;">New Deposit Request</h2>
+          <p>Hello Admin,</p>
+          <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <p>A new deposit request has been received:</p>
+            <p><strong>From:</strong> ${from}</p>
+            <p><strong>Amount:</strong> $${amount}</p>
+            <p><strong>Timestamp:</strong> ${timestamp}</p>
+          </div>
+          <p>Please review and process this deposit request.</p>
+          <p>Best regards,</p>
+          <p style="color: #f0b90b;">Veritartz Team</p>
         </div>
       </body>
     </html>
@@ -239,7 +269,7 @@ const sendDepositApproval = async ({  from, amount, method,timestamp,to}) => {
     </p>
  <p>${timestamp}</p>
     <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
+    <p>veritartz Team</p>
 
     </html>
     
@@ -491,7 +521,7 @@ const sendVerificationEmail = async ({ from, url }) => {
 
 
     <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
+    <p>veritartz Team</p>
 
     </html>
     
@@ -541,7 +571,7 @@ const sendWelcomeEmail = async ({ to, token }) => {
           <h2 style="color: #f0b90b; font-size: 1.6em;">Withdrawal Request Received</h2>
           <p>Hello <strong>Veritartz</strong></p>
   
-          <p>Your withdrawal request has been logged and is being reviewed. Please see the details below:</p>
+         
   
           <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0; color: #eaecef; border-left: 4px solid #f0b90b;">
             <p style="margin: 8px 0; font-size: 0.95em;">Thank you for signing up with us. You can now explore, create, and purchase amazing digital artwork.</p>
@@ -656,7 +686,7 @@ const resendWelcomeEmail = async ({ to, token }) => {
     // text: "Hello ?", // plain text body
     html: `
     <html>
-    <h2>Welcome to Opulasphere</h2>
+    <h2>Welcome to veritartz</h2>
 
     <p>Let us know if this is really your email address, 
     to help us keep your account secure
@@ -667,7 +697,7 @@ const resendWelcomeEmail = async ({ to, token }) => {
 
     <p>Your OTP is: ${speakeasy.totp({ secret: secret.base32, encoding: 'base32' })}</p>
     <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
+    <p>veritartz Team</p>
 
     </html>
     
@@ -709,7 +739,7 @@ const sendPasswordOtp = async ({ to }) => {
     // text: "Hello ?", // plain text body
     html: `
     <html>
-    <h2>Welcome to Opulasphere</h2>
+    <h2>Welcome to veritartz</h2>
 
     <p>Your OTP is: ${speakeasy.totp({ secret: secret.base32, encoding: 'base32' })}</p>
     <p>This OTP is valid for a short period of time. Do not share it with anyone.</p>
@@ -718,7 +748,7 @@ const sendPasswordOtp = async ({ to }) => {
 
 
     <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
+    <p>veritartz Team</p>
 
     </html>
     
@@ -763,7 +793,7 @@ const resetEmail = async ({ to, token }) => {
     // text: "Hello ?", // plain text body
     html: `
     <html>
-    <h2>Welcome to Opulasphere</h2>
+    <h2>Welcome to veritartz</h2>
 
     <p>You have requested to change your password.Please use the following OTP to reset your password.
     </p>
@@ -776,7 +806,7 @@ const resetEmail = async ({ to, token }) => {
     <p>If you did not request this password reset,please contact our support immediately.</p>
 
     <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
+    <p>veritartz Team</p>
 
     </html>
     
@@ -794,60 +824,60 @@ const resetEmail = async ({ to, token }) => {
 
 
 
-const sendUserDepositEmail = async ({ from, amount, to, method, timestamp }) => {
-  let transporter = nodemailer.createTransport({
-    host: "mail.privateemail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
+// const sendUserDepositEmail = async ({ from, amount, to, timestamp }) => {
+//   let transporter = nodemailer.createTransport({
+//     host: "mail.privateemail.com",
+//     port: 465,
+//     secure: true,
+//     auth: {
+//       user: process.env.EMAIL_USER,
+//       pass: process.env.EMAIL_PASSWORD,
+//     },
+//   });
 
-  let info = await transporter.sendMail({
-    from: `${process.env.EMAIL_USER}`,
-    to: to,
-    subject: "Transaction Notification",
-    html: `
-    <html>
-      <body style="background-color: #0b0e11; color: #eaecef; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px;">
-        <div style="max-width: 600px; margin: 0 auto; background-color: #1e2329; padding: 30px; border-radius: 12px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); border: 1px solid #ffd70044;">
-          <div style="text-align: center; margin-bottom: 30px;">
-            <img src="https://res.cloudinary.com/dsyjlantq/image/upload/v1747381149/opro9wihdbyfjjugv8ft.png" alt="Logo" style="width: 140px;" />
-          </div>
+//   let info = await transporter.sendMail({
+//     from: `${process.env.EMAIL_USER}`,
+//     to: to,
+//     subject: "Transaction Notification",
+//     html: `
+//     <html>
+//       <body style="background-color: #0b0e11; color: #eaecef; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px;">
+//         <div style="max-width: 600px; margin: 0 auto; background-color: #1e2329; padding: 30px; border-radius: 12px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); border: 1px solid #ffd70044;">
+//           <div style="text-align: center; margin-bottom: 30px;">
+//             <img src="https://res.cloudinary.com/dsyjlantq/image/upload/v1747381149/opro9wihdbyfjjugv8ft.png" alt="Logo" style="width: 140px;" />
+//           </div>
 
-          <h2 style="color: #f0b90b; font-size: 1.6em;">Deposit Notification</h2>
-          <p>Hello ${from}</p>
+//           <h2 style="color: #f0b90b; font-size: 1.6em;">Deposit Notification</h2>
+//           <p>Hello ${from}</p>
 
-          <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0; color: #eaecef;">
-            <p>You have sent a deposit order. Your deposit details are shown below for your reference:</p>
-            <p style="margin: 10px 0;"><strong>From:</strong> ${from}</p>
-            <p style="margin: 10px 0;"><strong>Amount:</strong> $${amount}</p>
-            <p style="margin: 10px 0;"><strong>Method:</strong> ${method}</p>
-            <p style="color: #8a8a8a; margin-top: 10px;">${timestamp}</p>
-          </div>
+//           <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0; color: #eaecef;">
+//             <p>You have sent a deposit order. Your deposit details are shown below for your reference:</p>
+//             <p style="margin: 10px 0;"><strong>From:</strong> ${from}</p>
+//             <p style="margin: 10px 0;"><strong>Amount:</strong> $${amount}</p>
+//             <p style="margin: 10px 0;"><strong>Method:</strong> ${method}</p>
+//             <p style="color: #8a8a8a; margin-top: 10px;">${timestamp}</p>
+//           </div>
 
-          <p style="background-color: #2b3139; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f0b90b;">
-            All payments are to be sent to your personal wallet address
-          </p>
+//           <p style="background-color: #2b3139; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f0b90b;">
+//             All payments are to be sent to your personal wallet address
+//           </p>
 
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #2b3139;">
-            <p>Best wishes,</p>
-            <p style="color: #f0b90b;"><strong>Opulasphere Team</strong></p>
-          </div>
+//           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #2b3139;">
+//             <p>Best wishes,</p>
+//             <p style="color: #f0b90b;"><strong>veritartz Team</strong></p>
+//           </div>
 
-          <div style="margin-top: 30px; text-align: center; font-size: 0.85em; color: #8a8a8a;">
-            This is an automated message, please do not reply.
-          </div>
-        </div>
-      </body>
-    </html>
-    `
-  });
+//           <div style="margin-top: 30px; text-align: center; font-size: 0.85em; color: #8a8a8a;">
+//             This is an automated message, please do not reply.
+//           </div>
+//         </div>
+//       </body>
+//     </html>
+//     `
+//   });
 
-  console.log("Message sent: %s", info.messageId);
-};
+//   console.log("Message sent: %s", info.messageId);
+// };
 
 
 const sendUserPlanEmail = async ({  from, subamount, to,subname,timestamp }) => {
@@ -885,7 +915,7 @@ const sendUserPlanEmail = async ({  from, subamount, to,subname,timestamp }) => 
 
     <p>You  successfully subscribed to $${subamount} worth of ${subname} plan at ${timestamp}</p>
     <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
+    <p>veritartz Team</p>
 
     </html>
     
@@ -945,7 +975,7 @@ const sendUserDetails = async ({ to,password,name,token }) =>{
     <p>If you did not authorize this registeration ,please contact our support immediately.</p>
 
     <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
+    <p>veritartz Team</p>
 
     </html>
     
@@ -996,7 +1026,7 @@ const sendKycAlert = async ({ name }) =>{
     <p>Kindly check your dashboard to view details</p>
 
     <p>Best wishes,</p>
-    <p>Opulasphere Team</p>
+    <p>veritartz Team</p>
 
     </html>
     
