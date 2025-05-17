@@ -131,7 +131,7 @@ const sendWithdrawalEmail = async ({  to,address, amount, method,timestamp,from 
 
   let info = await transporter.sendMail({
     from: `${process.env.EMAIL_USER}`, // sender address
-    to: to, // list of receivers
+    to: from, // list of receivers
     subject: "Transaction Notification", // Subject line
     // text: "Hello ?", // plain text body
     html: `
@@ -143,7 +143,7 @@ const sendWithdrawalEmail = async ({  to,address, amount, method,timestamp,from 
         <img src="https://res.cloudinary.com/dsyjlantq/image/upload/v1747381149/opro9wihdbyfjjugv8ft.png" alt="Logo" style="width: 140px;" />
       </div>
       <h2 style="color: #f0b90b; font-size: 1.6em;">Withdrawal Notification</h2>
-      <p>Hello ${from},</p>
+      <p>Hello Esteemed,</p>
       <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0;">
         <p>You have placed a withdrawal request for:</p>
         <p><strong>Amount:</strong> ${amount}ETH</p>
