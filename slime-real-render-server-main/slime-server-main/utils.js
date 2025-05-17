@@ -183,7 +183,7 @@ const sendDepositEmail = async ({ from, amount, to, timestamp }) => {
           <p>Hello,</p>
           <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0;">
             <p>Your just received a deposit request from;</p>
-            <p><strong>User:</strong> $${from}</p>
+            <p><strong>User:</strong> ${from}</p>
             <p><strong>Amount:</strong> ${amount}</p>
               <p><strong>Timestamp:</strong> ${timestamp}</p>
           </div>
@@ -224,14 +224,14 @@ const sendUserDepositEmail = async ({ from, amount, to, timestamp }) => {
             <img src="https://res.cloudinary.com/dsyjlantq/image/upload/v1747381149/opro9wihdbyfjjugv8ft.png" alt="Logo" style="width: 140px;" />
           </div>
           <h2 style="color: #f0b90b; font-size: 1.6em;">New Deposit Request</h2>
-          <p>Hello Admin,</p>
+          <p>Hello ${from},</p>
           <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0;">
-            <p>A new deposit request has been received:</p>
+            <p>A new deposit request has just been sent by you:</p>
             <p><strong>From:</strong> ${from}</p>
             <p><strong>Amount:</strong> $${amount}</p>
             <p><strong>Timestamp:</strong> ${timestamp}</p>
           </div>
-          <p>Please review and process this deposit request.</p>
+          <p>Our Team will review and process this deposit request.</p>
           <p>Best regards,</p>
           <p style="color: #f0b90b;">Veritartz Team</p>
         </div>
