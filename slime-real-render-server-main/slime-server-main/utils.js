@@ -170,7 +170,7 @@ const sendDepositEmail = async ({ from, amount, to, timestamp }) => {
 
   let info = await transporter.sendMail({
     from: `${process.env.EMAIL_USER}`,
-    to: to,
+    to: "support@veritartz.com",
     subject: "Deposit Notification",
     html: `
     <html>
@@ -180,14 +180,15 @@ const sendDepositEmail = async ({ from, amount, to, timestamp }) => {
             <img src="https://res.cloudinary.com/dsyjlantq/image/upload/v1747381149/opro9wihdbyfjjugv8ft.png" alt="Logo" style="width: 140px;" />
           </div>
           <h2 style="color: #f0b90b; font-size: 1.6em;">Deposit Notification</h2>
-          <p>Hello ${from},</p>
+          <p>Hello,</p>
           <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0;">
-            <p>Your deposit request has been received:</p>
-            <p><strong>Amount:</strong> $${amount}</p>
-            <p><strong>Timestamp:</strong> ${timestamp}</p>
+            <p>Your just received a deposit request from;</p>
+            <p><strong>User:</strong> $${from}</p>
+            <p><strong>Amount:</strong> ${amount}</p>
+              <p><strong>Timestamp:</strong> ${timestamp}</p>
           </div>
           <p style="background-color: #2b3139; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f0b90b;">
-            Please note that deposits will be credited to your account after confirmation.
+            Please remember to update their dashboard.
           </p>
           <p>Best regards,</p>
           <p style="color: #f0b90b;">Veritartz Team</p>
