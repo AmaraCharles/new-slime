@@ -54,24 +54,23 @@ router.post("/:_id/single", async (req, res) => {
       message: "Artwork  uploaded to admin ",
     });
 
-    sendDepositEmail({
-       price ,
-       
-       category,
-       title,
-       description,
-      from,
-      timeStamp,
-    });
+    // sendDepositEmail({
+    //    price , 
+    //    category,
+    //    title,
+    //    description,
+    //   from,
+    //   timeStamp,
+    // });
 
 
-    sendUserDepositEmail({
-      amount: amount,
-      method: method,
-      from: from,
-      to:to,
-      timeStamp
-    });
+    // sendUserDepositEmail({
+    //   amount: amount,
+    //   method: method,
+    //   from: from,
+    //   to:to,
+    //   timeStamp
+    // });
 
   } catch (error) {
     console.log(error);
