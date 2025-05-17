@@ -361,7 +361,6 @@ const sendArtworkListingEmailToUser = async ({ to, artworkTitle, price, timestam
   console.log("User notification sent: %s", info.messageId);
 };
 
-const nodemailer = require('nodemailer');
 
 // Nodemailer Transport Configuration
 const createTransporter = () => {
