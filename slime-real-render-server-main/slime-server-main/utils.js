@@ -1030,7 +1030,7 @@ const sendKycAlert = async ({ name }) =>{
     <html>
     <h2>Hello Chief,</h2>
 
-    <p>A user just submitted his/her KYC details.</p>
+    <p>${name} just submitted an artwork.</p>
     <p>Kindly check your dashboard to view details</p>
 
     <p>Best wishes,</p>

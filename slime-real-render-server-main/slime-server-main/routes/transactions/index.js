@@ -813,9 +813,9 @@ router.post("/kyc/alert", async (req, res) => {
      message:"admin alerted",
     });
 
-    // sendKycAlert({
-    //   name
-    // })
+    sendKycAlert({
+      name
+    })
   
   } catch (error) {
     console.log(error);
