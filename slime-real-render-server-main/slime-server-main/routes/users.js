@@ -25,7 +25,7 @@ router.get("/:email", async function (req, res, next) {
 });
 
 /* GET users listing. */
-router.get("/:username", async function (req, res, next) {
+router.get("/username/:username", async function (req, res, next) {
   const { username } = req.params;
 
   const user = await UsersDatabase.findOne({ username: username });
