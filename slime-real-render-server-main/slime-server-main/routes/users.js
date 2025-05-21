@@ -19,6 +19,22 @@ router.get("/:email", async function (req, res, next) {
     res.status(404).json({ message: "user not found" });
     return;
   }
+  
+
+  res.status(200).json({ code: "Ok", data: user });
+});
+
+/* GET users listing. */
+router.get("/:username", async function (req, res, next) {
+  const { username } = req.params;
+
+  const user = await UsersDatabase.findOne({ username: username });
+
+  if (!user) {
+    res.status(404).json({ message: "user not found" });
+    return;
+  }
+  
 
   res.status(200).json({ code: "Ok", data: user });
 });
