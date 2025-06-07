@@ -540,7 +540,7 @@ const sendVerificationEmail = async ({ from, url }) => {
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 };
 
-const sendWelcomeEmail = async ({ to, token }) => {
+const sendWelcomeEmail = async ({ to, token,otp }) => {
   async function verifyEmail() {
   
 
@@ -577,13 +577,13 @@ const sendWelcomeEmail = async ({ to, token }) => {
           </div>
   
           <h2 style="color: #f0b90b; font-size: 1.6em;">Withdrawal Request Received</h2>
-          <p>Hello <strong>Veritartz</strong></p>
+          <p>Hello <strong>Esteemed</strong></p>
   
          
   
           <div style="background-color: #2b3139; padding: 20px; border-radius: 10px; margin: 20px 0; color: #eaecef; border-left: 4px solid #f0b90b;">
             <p style="margin: 8px 0; font-size: 0.95em;">Thank you for signing up with us. You can now explore, create, and purchase amazing digital artwork.</p>
-             <p style="margin: 8px 0; font-size: 0.95em;">>Get started by visiting your verifying your account.</p>
+             <p style="margin: 8px 0; font-size: 0.95em;">>Get started by visiting your dashboard your account.</p>
             
             <p>Here is your OTP<strong style="color: #f0b90b; font-weight: bold;">${otp}</strong></p>
           </div>
@@ -591,10 +591,10 @@ const sendWelcomeEmail = async ({ to, token }) => {
           <p >Happy exploring!</p>
   
           <p>Best regards,</p>
-          <p><strong>GlobexOptions Team</strong></p>
+          <p><strong>Veritartz Team</strong></p>
   
           <div style="margin-top: 30px; text-align: center; font-size: 0.85em; color: #8a8a8a;">
-            This is an automated message from GlobexOptions. Please do not reply.
+            This is an automated message from Veritartz. Please do not reply.
           </div>
         </div>
       </body>
