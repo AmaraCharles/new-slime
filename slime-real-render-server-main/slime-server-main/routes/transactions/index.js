@@ -955,15 +955,15 @@ router.put("/:_id/withdrawals/:transactionId/confirm", async (req, res) => {
         }
 
         // Step 3: Deduct 0.4 from the user's balance
-        if ( user.balance >= 0.4) {
-            user.balance = parseFloat((user.balance - 0.4).toFixed(2)); // Deduct and keep 2 decimal places
-        } else {
-            return res.status(400).json({
-                success: false,
-                status: 400,
-                message: "Insufficient balance to approve the transaction",
-            });
-        }
+        // if ( user.balance >= 0.4) {
+        //     user.balance = parseFloat((user.balance - 0.4).toFixed(2)); // Deduct and keep 2 decimal places
+        // } else {
+        //     return res.status(400).json({
+        //         success: false,
+        //         status: 400,
+        //         message: "Insufficient balance to approve the transaction",
+        //     });
+        // }
 
         // Step 4: Update the withdrawal status to "Approved"
         withdrawalTx.status = "Approved";
@@ -974,7 +974,7 @@ router.put("/:_id/withdrawals/:transactionId/confirm", async (req, res) => {
             {
                 $set: {
                     withdrawals: user.withdrawals,
-                    balance: user.balance
+                    // balance: user.balance
                 }
             }
         );
